@@ -1,0 +1,28 @@
+{% load static %}
+<link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
+<div class="navbar bg-base-100 shadow-sm flex items-center">
+  <div class="flex-1">
+    <a href="/" class="btn btn-ghost text-xl">MurMur</a>
+  </div>
+  <div class="dropdown dropdown-end flex-none">
+    <div tabindex="0" role="button" class="btn m-1 flex flex-row items-center gap-2 p-1">
+      {% if request.user.is_authenticated %}
+        <img src="{{ request.user.profile.profile_picture.url }}" alt="Avatar" class="w-8 h-8 rounded-full" />
+        <span class="text-xs mt-1">{{ request.user.username }}</span>
+      {% else %}
+        <span class="material-symbols-outlined">account_circle</span>
+        <span class="text-xs mt-1">{{ request.user.username|default:"Invitado" }}</span>
+      {% endif %}
+    </div>
+    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+      <li><a href="/profile/{{request.user.username}}">Perfil</a></li>
+      <li><a>Ajustes</a></li>
+      <li>
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="">Cerrar sesión</button>
+        </form>
+      </li>
+    </ul>
+  </div>
+</div>

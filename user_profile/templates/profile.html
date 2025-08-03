@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+        <title>MurMur</title>
+        {% load static %}
+        <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body class="bg-base-200 min-h-screen">
+        {% include 'components/navbar.html' %}
+
+        <div class="grid grid-cols-12 gap-4 p-4">
+
+            <aside class="col-span-2 bg-base-100 rounded-lg shadow hidden lg:block p-4 select-none">
+                <p class="text-sm text-gray-500">[Sidebar placeholder]</p>
+            </aside>
+
+            <div class="col-span-12 lg:col-span-8 space-y-4">
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body flex items-center space-x-4 p-4">
+                        <div class="flex items-center">
+                            
+                                {% if profile.profile_picture %}
+                                    <img src="{{ profile.profile_picture.url }}" alt="Avatar" class="w-24 avatar" />
+                                {% else %}
+                                    <span class="material-symbols-outlined">account_circle</span>
+                                {% endif %}
+                            
+
+                            
+                                <h2> {{ profile.user.username }}</h2>
+                                {% if profile.is_anonymous %}
+                                    <span class="badge badge-secondary ml-2">Anónimo</span>
+                                {% endif %}
+                            
+                        </div>
+                    </div>
+                </div>
+                {% include 'components/post_loop.html' with posts=posts %}
+            </div>
+            
+        </div>
+    </body>
+</html>
+
+            
+        
+

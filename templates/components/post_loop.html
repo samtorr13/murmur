@@ -1,0 +1,28 @@
+            {% for post in posts %}
+            <div class="card bg-base-100 shadow w-full">
+                <div class="card-body">
+                    <h2 class="text-sm sm:text-xl text-gray-500">
+                        {% if post.anonymous %}
+                            Anónimo
+                        {% else %}
+                           <a href="profile/{{post.author.username}}"> {{ post.author.username }} </a>
+                        {% endif %}
+                        &bull; {{ post.created_at|date:"d M Y H:i" }}
+                    </h2>
+                    <p>{{ post.content }}</p>
+                    <div class="card-actions justify-end mt-2">
+                    <form action="{% url 'like_post' post.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ghost btn-sm">
+                            <span class="material-symbols-outlined">thumb_up</span> {{ post.likes.count }} Me gusta
+                        </button>
+                    </form>
+                    <button class="btn btn-ghost btn-sm" onclick="comment_box.showModal({{ post.id }})">
+                        <span class="material-symbols-outlined">comment</span> Comentar
+                    </button>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-gray-500">Aún no hay murmullos.</p>
+            {% endfor %}

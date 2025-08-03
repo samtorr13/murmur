@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <title>MurMur</title>
+    {% load static %}
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
+</head>
+<body class="bg-base-200 min-h-screen">
+
+    {% include 'components/navbar.html' %}
+
+
+    <!-- Main Layout -->
+    <div class="grid grid-cols-12 gap-4 p-4 sm:gap-6 lg:gap-8 max-w-screen-xl mx-auto">
+        
+        <!-- Sidebar placeholder -->
+        <aside class="col-span-2 bg-base-100 rounded-lg shadow hidden lg:block p-4 select-none">
+            <p class="text-sm text-gray-500">[Sidebar placeholder]</p>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="col-span-12 lg:col-span-8 space-y-4">
+
+            <!-- Formulario para publicar -->
+            <form method="post" class="card bg-base-100 shadow-xl">
+                {% csrf_token %}
+                <div class="card-body">
+                    <h2 class="card-title">Crear nuevo murmullo</h2>
+                    
+                    <textarea name="content" class="textarea textarea-bordered w-full resize-none" rows="4" placeholder="¿Qué estás pensando, {{ request.user.username }}?"></textarea>
+                    
+                    <label class="label cursor-pointer mt-2">
+                        <span class="label-text">¿Publicar como anónimo?</span> 
+                        <input type="checkbox" name="anonymous" class="checkbox ml-2" />
+                    </label>
+
+                    <button type="submit" class="btn btn-primary mt-4 sm:btn-md sm:w-auto">Publicar</button>
+                </div>
+            </form>
+
+            <!-- Feed de posts -->
+            {% include 'components/post_loop.html' with posts=posts %}
+        </main>
+
+        <!-- Extra sidebar (opcional) -->
+        <aside class="col-span-2 hidden lg:block select-none"></aside>
+    </div>
+
+    <!-- Floating button (opcional si ya no usas modal/new page) -->
+    <a href="/new"
+       class="btn btn-primary rounded-full w-16 h-16 fixed bottom-6 right-6 shadow-lg z-50 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 4v16m8-8H4"/>
+        </svg>
+    </a>
+
+<dialog id="comment_box" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Hello!</h3>
+    <p class="py-4">Press ESC key or click outside to close</p>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+</body>
+</html>
