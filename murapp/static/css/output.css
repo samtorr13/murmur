@@ -1645,6 +1645,38 @@ video {
   --cardtitle-fs: 1.375rem;
 }
 
+.card-side {
+  align-items: stretch;
+  flex-direction: row;
+}
+
+.card-side :where(figure:first-child) {
+  overflow: hidden;
+  border-start-start-radius: inherit;
+  border-start-end-radius: unset;
+  border-end-start-radius: inherit;
+  border-end-end-radius: unset;
+}
+
+.card-side :where(figure:last-child) {
+  overflow: hidden;
+  border-start-start-radius: unset;
+  border-start-end-radius: inherit;
+  border-end-start-radius: unset;
+  border-end-end-radius: inherit;
+}
+
+.card-side figure > * {
+  max-width: unset;
+}
+
+.card-side :where(figure > *) {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
 .link {
   cursor: pointer;
   text-decoration-line: underline;
@@ -3336,6 +3368,10 @@ video {
   grid-column: span 2 / span 2;
 }
 
+.col-span-1 {
+  grid-column: span 1 / span 1;
+}
+
 .m-1 {
   margin: 0.25rem;
 }
@@ -3353,16 +3389,16 @@ video {
   margin-left: 0.5rem;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
 .mt-2 {
   margin-top: 0.5rem;
 }
 
 .mt-4 {
   margin-top: 1rem;
-}
-
-.mt-1 {
-  margin-top: 0.25rem;
 }
 
 .block {
@@ -3401,6 +3437,14 @@ video {
   height: 2rem;
 }
 
+.h-24 {
+  height: 6rem;
+}
+
+.h-full {
+  height: 100%;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -3437,12 +3481,12 @@ video {
   max-width: 1280px;
 }
 
-.flex-none {
-  flex: none;
-}
-
 .flex-1 {
   flex: 1 1 0%;
+}
+
+.flex-none {
+  flex: none;
 }
 
 .border-collapse {
@@ -3475,10 +3519,6 @@ video {
   flex-direction: row;
 }
 
-.flex-col {
-  flex-direction: column;
-}
-
 .place-items-center {
   place-items: center;
 }
@@ -3507,8 +3547,12 @@ video {
   gap: 1rem;
 }
 
-.gap-1 {
-  gap: 0.25rem;
+.gap-3 {
+  gap: 0.75rem;
+}
+
+.gap-10 {
+  gap: 2.5rem;
 }
 
 .space-x-4 > :not([hidden]) ~ :not([hidden]) {
@@ -3521,6 +3565,18 @@ video {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+
+.space-x-3 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.75rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-x-10 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(2.5rem * var(--tw-space-x-reverse));
+  margin-left: calc(2.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
 .rounded {
@@ -3560,6 +3616,15 @@ video {
   background-color: rgb(254 226 226 / var(--tw-bg-opacity));
 }
 
+.object-cover {
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.p-1 {
+  padding: 0.25rem;
+}
+
 .p-2 {
   padding: 0.5rem;
 }
@@ -3572,8 +3637,8 @@ video {
   padding: 1.5rem;
 }
 
-.p-1 {
-  padding: 0.25rem;
+.p-3 {
+  padding: 0.75rem;
 }
 
 .py-4 {
@@ -3603,6 +3668,11 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.text-7xl {
+  font-size: 4.5rem;
+  line-height: 1;
 }
 
 .font-bold {
@@ -3666,6 +3736,24 @@ video {
 @plugin "daisyui";
 
 @media (min-width: 640px) {
+  .sm\:card-lg .card-body {
+    --card-p: 2rem;
+    --card-fs: 1rem;
+  }
+
+  .sm\:card-lg .card-title {
+    --cardtitle-fs: 1.25rem;
+  }
+
+  .sm\:card-xl .card-body {
+    --card-p: 2.5rem;
+    --card-fs: 1.125rem;
+  }
+
+  .sm\:card-xl .card-title {
+    --cardtitle-fs: 1.375rem;
+  }
+
   .sm\:btn-md {
     --fontsize: 0.875rem;
     --btn-p: 1rem;
@@ -3676,12 +3764,25 @@ video {
     width: auto;
   }
 
+  .sm\:grid-cols-8 {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  .sm\:grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
   .sm\:gap-6 {
     gap: 1.5rem;
   }
 
   .sm\:text-xl {
     font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .sm\:text-lg {
+    font-size: 1.125rem;
     line-height: 1.75rem;
   }
 }
@@ -3697,11 +3798,23 @@ video {
     grid-column: span 8 / span 8;
   }
 
+  .lg\:col-span-2 {
+    grid-column: span 2 / span 2;
+  }
+
   .lg\:block {
     display: block;
   }
 
+  .lg\:grid-cols-12 {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
   .lg\:gap-8 {
     gap: 2rem;
+  }
+
+  .lg\:gap-4 {
+    gap: 1rem;
   }
 }

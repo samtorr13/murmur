@@ -2,7 +2,7 @@
 <html>
     <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>MurMur</title>
         {% load static %}
         <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
@@ -19,23 +19,23 @@
 
             <div class="col-span-12 lg:col-span-8 space-y-4">
                 <div class="card bg-base-100 shadow-xl">
-                    <div class="card-body flex items-center space-x-4 p-4">
-                        <div class="flex items-center">
-                            
+                    <div class="card-body p-4">
+                        <h1 class="card-title">Perfil de: {{ profile.user.username }}</h1>
+                        <div class="flex items-center gap-4">
+                            <div class="avatar w-24 h-24">
                                 {% if profile.profile_picture %}
-                                    <img src="{{ profile.profile_picture.url }}" alt="Avatar" class="w-24 avatar" />
+                                    <img src="{{ profile.profile_picture.url }}" alt="Avatar" class="rounded-full w-full h-full object-cover" />
                                 {% else %}
-                                    <span class="material-symbols-outlined">account_circle</span>
+                                    <span class="material-symbols-outlined text-7xl">account_circle</span>
                                 {% endif %}
-                            
-
-                            
-                                <h2> {{ profile.user.username }}</h2>
-                                {% if profile.is_anonymous %}
-                                    <span class="badge badge-secondary ml-2">Anónimo</span>
-                                {% endif %}
-                            
+                            </div>
+                            <p class="text-lg">{{ profile.bio|default:"No hay biografía disponible." }}</p>
                         </div>
+                        {% if profile.user == request.user %}
+                        <div class="card-actions justify-end" >
+                            <button class="btn btn-primary mt-4">Editar perfil</button>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 {% include 'components/post_loop.html' with posts=posts %}
@@ -45,6 +45,6 @@
     </body>
 </html>
 
-            
-        
+
+
 
