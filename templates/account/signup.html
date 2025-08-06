@@ -2,33 +2,37 @@
 <html>
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-
-    <title>MurMur</title>
     {% load static %}
     <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MurMur</title>
+    
+    
 </head>
 
 
  <body>
-    <div class="grid md:grid-cols-2 min-h-screen bg-base-200 place-items-center gap-4 p-4">
+    <div class="grid md:grid-cols-2 min-h-screen bg-base-200 place-items-center gap-4 sm:gap-1 p-4">
       
       <!-- Columna 1 -->
       <div class="card bg-base-100 shadow-xl p-6 w-full max-w-md">
         <h2 class="card-title text-xl font-bold mb-4">Bienvenido a MurMur</h2>
-        <p class="mb-4">Inicia sesión para comenzar a compartir tus pensamientos.</p>
-        <p class="text-sm text-gray-500 mb-4">¿No tienes cuenta? <a href="/accounts/signup" class="text-primary">Regístrate aquí</a>.</p>
+        <p class="mb-4">Registrate para comenzar a compartir tus pensamientos.</p>
+        <p class="text-sm text-gray-500 mb-4">¿Ya tienes una cuenta? <a href="/accounts/login" class="text-primary">Inicia Sesión</a>.</p>
       </div>
 
       <!-- Columna 2 -->
       <form method="post" class="w-full max-w-md">
         {% csrf_token %}
         <div class="card card-xl bg-base-100 shadow-xl p-6">
-          <h2 class="text-xl font-bold mb-4">Iniciar sesión</h2>
+          <h2 class="text-xl font-bold mb-4">Registro</h2>
           <input type="text" name="username" placeholder="Usuario" class="input input-bordered w-full mb-4" required />
-          <input type="text" name="email" placeholder="correo" class="input input-bordered w-full mb-4" required />
+          <input type="email" name="email" placeholder="correo" class="input input-bordered validator w-full mb-4" required />
           <input type="password" name="password1" placeholder="Contraseña" class="input input-bordered w-full mb-4" required />
           <input type="password" name="password2" placeholder="repetir contraseña" class="input input-bordered w-full mb-4" required />
-          <button type="submit" class="btn btn-primary w-full">Entrar</button>
+          <button type="submit" class="btn btn-primary w-full">Crear Cuenta</button>
 
         {% if form.errors %}
             <div class="bg-red-100 text-red-600 p-2 rounded">

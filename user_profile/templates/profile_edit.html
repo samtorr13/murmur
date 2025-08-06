@@ -1,0 +1,170 @@
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    {% load static %}
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MurMur</title>
+</head>
+<body class="bg-base-200 min-h-screen">
+    {% include 'components/navbar.html' %}
+
+    <div class="grid grid-cols-12 gap-4 p-4">
+        <aside class="col-span-2 bg-base-100 rounded-lg shadow hidden lg:block p-4 select-none">
+            <p class="text-sm text-gray-500">[Sidebar placeholder]</p>
+        </aside>
+        
+        <div class="col-span-12 lg:col-span-8 space-y-4">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body p-4">
+                    <h1 class="card-title">Perfil de: {{ profile.user.username }}</h1>
+                    <form id="profileForm" method="post" action="{% url 'profile_edit' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="flex items-center gap-4">
+                            <div class="flex flex-col gap-3 items-center">
+                                <div class="avatar w-24 h-24">
+                                    {% if profile.profile_picture %}
+                                        <img id="finalPreview" src="{{ profile.profile_picture.url }}" alt="Avatar" class="rounded-full w-full h-full object-cover" />
+                                    {% else %}
+                                        <span class="material-symbols-outlined text-7xl">account_circle</span>
+                                    {% endif %}
+                                </div>
+                                <input id="uploadImage" type="file" accept="image/*" class="hidden" name="profile_picture" >
+                                <label for="uploadImage" class="btn btn-soft cursor-pointer">Cambiar Imagen</label>
+                            </div>
+                            <textarea class="textarea" name="bio">{{ profile.bio }}</textarea>
+                        </div>
+                        {% if profile.user == request.user %}
+                        <div class="card-actions justify-end" >
+                            <input type="submit" class="btn btn-primary mt-4" value="Guardar" />
+                        </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+<div id="cropModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[90vw] max-w-md">
+        <div id="cropContainer" class="w-full h-64 relative overflow-hidden">
+            <img id="imageToCrop" src="" class="max-w-full" />
+        </div>
+        <div class="flex justify-end gap-2 mt-4">
+            <button onclick="closeModal()" class="btn btn-sm">Cancelar</button>
+            <button onclick="cropImage()" class="btn btn-sm btn-success">Usar esta foto</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let cropper;
+    let croppedBlob = null; // Guardamos el blob recortado para enviar en submit
+    const uploadImage = document.getElementById('uploadImage');
+    const imageToCrop = document.getElementById('imageToCrop');
+    const finalPreview = document.getElementById('finalPreview');
+    const cropModal = document.getElementById('cropModal');
+    const profileForm = document.getElementById('profileForm');
+
+    uploadImage.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            imageToCrop.src = event.target.result;
+            cropModal.classList.remove('hidden');
+
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(imageToCrop, {
+                aspectRatio: 1,
+                viewMode: 1,
+                dragMode: 'move',
+                autoCropArea: 1,
+                responsive: true,
+                background: false,
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+
+    function cropImage() {
+        if (!cropper) return;
+
+        const canvas = cropper.getCroppedCanvas({
+            width: 300,
+            height: 300,
+            imageSmoothingQuality: 'high',
+        });
+
+        finalPreview.src = canvas.toDataURL('image/jpeg');
+
+        canvas.toBlob(blob => {
+            croppedBlob = blob; // Guardamos para el envío final
+            closeModal();
+        }, 'image/jpeg');
+    }
+
+    function closeModal() {
+        cropModal.classList.add('hidden');
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+        uploadImage.value = '';
+    }
+
+    // Función para obtener token CSRF de cookie Django
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    profileForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(profileForm);
+
+        if (croppedBlob) {
+            // Reemplazamos el archivo input con el blob recortado
+            formData.set('profile_picture', croppedBlob, 'profile.jpg');
+        } else {
+            // Si no hay imagen recortada, quitamos profile_picture para no enviar archivo vacío
+            formData.delete('profile_picture');
+        }
+
+        fetch(profileForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                // Cambia la URL aquí a donde quieres que vaya luego de guardar
+                window.location.href = "{% url 'userprofile' profile.user.username %}";
+            } else {
+                alert('Error al actualizar perfil');
+            }
+        })
+        .catch(() => alert('Error en la conexión'));
+    });
+</script>
+</body>
+</html>

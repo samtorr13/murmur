@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="{{profile.prof_theme}}">
     <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +20,6 @@
             <div class="col-span-12 lg:col-span-8 space-y-4">
                 <div class="card bg-base-100 shadow-xl">
                     <div class="card-body p-4">
-                        <h1 class="card-title">Perfil de: {{ profile.user.username }}</h1>
                         <div class="flex items-center gap-4">
                             <div class="avatar w-24 h-24">
                                 {% if profile.profile_picture %}
@@ -29,11 +28,15 @@
                                     <span class="material-symbols-outlined text-7xl">account_circle</span>
                                 {% endif %}
                             </div>
-                            <p class="text-lg">{{ profile.bio|default:"No hay biografía disponible." }}</p>
+                            <div class="flex flex-col gap-1">
+                                <h1 class="text-xl"> {{profile.user.username}} </h1>
+                                <p class="text-md">{{ profile.bio|default:"No hay biografía disponible." }}</p>
+                            </div>
                         </div>
                         {% if profile.user == request.user %}
-                        <div class="card-actions justify-end" >
-                            <button class="btn btn-primary mt-4">Editar perfil</button>
+                        <div class="card-actions justify-end accent" >
+                            
+                            <a href="{% url 'profile_edit' %}" class="btn btn-primary mt-4">Editar perfil</a>
                         </div>
                         {% endif %}
                     </div>

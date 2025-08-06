@@ -1,0 +1,11 @@
+<form 
+    hx-post="{% url 'like_post' post.id %}" 
+    hx-target="#like-btn-wrapper-{{ post.id }}" 
+    hx-swap="innerHTML"
+    method="POST"
+>
+    {% csrf_token %}
+        <button type="submit" class="btn btn-ghost btn-sm">
+            <span class="material-symbols-outlined">thumb_up</span> {{ post.likes.count }} Me gusta
+        </button>
+</form>

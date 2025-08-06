@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html>
+<html data-theme="{{user.profile.prof_theme}}">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +7,14 @@
     {% load static %}
     <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
 </head>
-<body class="bg-base-200 min-h-screen">
+<body class="bg-base-200 ">
+
 
     {% include 'components/navbar.html' %}
 
 
     <!-- Main Layout -->
-    <div class="grid grid-cols-12 gap-4 p-4 sm:gap-6 lg:gap-8 max-w-screen-xl mx-auto">
+    <div class="grid grid-cols-12 gap-1 p-4 sm:gap-6 lg:gap-4 mx-auto">
         
         <!-- Sidebar placeholder -->
         <aside class="col-span-2 bg-base-100 rounded-lg shadow hidden lg:block p-4 select-none">
@@ -59,15 +59,7 @@
         </svg>
     </a>
 
-<dialog id="comment_box" class="modal">
-  <div class="modal-box">
-    <h3 class="text-lg font-bold">Hello!</h3>
-    <p class="py-4">Press ESC key or click outside to close</p>
-  </div>
-  <form method="dialog" class="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
+
 
 </body>
 </html>

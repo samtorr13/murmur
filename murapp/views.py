@@ -1,7 +1,10 @@
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView
 from posts.models import Like, Post
+from django.core.paginator import Paginator
+from django.template.loader import render_to_string
 
 @login_required
 def home(request):
@@ -17,8 +20,15 @@ def home(request):
             )
             return redirect('home')
     username = request.user.username if request.user.is_authenticated else 'Guest'
-    posts = Post.objects.all().order_by('-created_at')
-    return render(request, 'index.html', {'posts': posts})
+    page = request.GET.get("page", 1)
+    posts = Post.objects.order_by("-created_at")
+    paginator = Paginator(posts, 5)  # 10 posts por "página"
+    page_obj = paginator.get_page(page)
+
+    if request.headers.get("HX-Request"):
+        return render(request, "components/post_loop.html", {"posts": page_obj})
+    
+    return render(request, 'index.html', {'posts': page_obj})
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
@@ -39,5 +49,10 @@ def like_post(request, post_id):
 
     post.like_count = post.likes.count()
     post.save()
+
+    if request.headers.get('HX-Request'):
+        html = render_to_string("like_btn.html", {"post": post, "user": request.user})
+        return HttpResponse(html)
+
 
     return redirect('home')
