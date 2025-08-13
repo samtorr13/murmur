@@ -1,7 +1,8 @@
 from django.contrib import admin
-from user_profile.models import UserProfile
+from user_profile.models import UserProfile, Theme
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
+    filter_horizontal = ("themes", "posts")
     list_display = ('user', 'bio', 'profile_picture')
     search_fields = ('user__username',)
     readonly_fields = ('user',)
@@ -17,3 +18,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
     def has_add_permission(self, request):
         return False
+
+@admin.register(Theme)
+class ThemeAdmin(admin.ModelAdmin):
+    list_display= ('name', )

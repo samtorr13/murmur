@@ -6,7 +6,7 @@ from posts.models import Like, Post
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 
-@login_required
+
 def home(request):
     if request.method == 'POST':
         content = request.POST.get('content', '').strip()

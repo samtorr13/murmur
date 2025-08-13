@@ -1,8 +1,9 @@
-<html>
+<html data-theme="{{profile.prof_theme}}">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
     {% load static %}
     <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
 
@@ -14,18 +15,21 @@
 
     <div class="grid grid-cols-12 gap-4 p-4">
         <aside class="col-span-2 bg-base-100 rounded-lg shadow hidden lg:block p-4 select-none">
-            <p class="text-sm text-gray-500">[Sidebar placeholder]</p>
+            <p class="text-sm text-gray-500">{{temas}}</p>
         </aside>
         
         <div class="col-span-12 lg:col-span-8 space-y-4">
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body p-4">
-                    <h1 class="card-title">Perfil de: {{ profile.user.username }}</h1>
+                    <h1 class="card-title p-4">Editar Perfil</h1>
+
+                    
                     <form id="profileForm" method="post" action="{% url 'profile_edit' %}" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <div class="flex items-center gap-4">
+                        <div class="sm:flex-row flex flex-col items-center gap-4">
                             <div class="flex flex-col gap-3 items-center">
-                                <div class="avatar w-24 h-24">
+                                <h1> Imagen de Perfil </h1>
+                                <div class="avatar size-64 sm:size-32 p-2">
                                     {% if profile.profile_picture %}
                                         <img id="finalPreview" src="{{ profile.profile_picture.url }}" alt="Avatar" class="rounded-full w-full h-full object-cover" />
                                     {% else %}
@@ -35,7 +39,20 @@
                                 <input id="uploadImage" type="file" accept="image/*" class="hidden" name="profile_picture" >
                                 <label for="uploadImage" class="btn btn-soft cursor-pointer">Cambiar Imagen</label>
                             </div>
-                            <textarea class="textarea" name="bio">{{ profile.bio }}</textarea>
+                            <div id="bio_cont" class="w-64">
+                                <legend class="fieldset-legend"> Bio </legend>
+                                <textarea class="textarea" name="bio">{{ profile.bio }}</textarea>
+                            </div>
+                            <fieldset class="grid grid-cols-3 gap-1 fieldset border border-base-300 rounded-box p-2">
+                            <legend class="fieldset-legend">Temas</legend>
+                                {% for theme in temas %}
+                                <div id="theme_sel" data-theme="{{theme}}" class="grid bg-base-200 p-2 border border-accent rounded-box">
+                                    <input type="radio" id="{{theme}}" name="theme" value="{{theme}}" class="hidden" data-set-theme="{{theme}}" data-act-class="ACTIVECLASS" />
+                                    <label for="{{theme}}" class="btn btn-primary"> {{theme}} </label>
+                                </div>
+                                {% endfor %}
+                            </fieldset>                             
+                            
                         </div>
                         {% if profile.user == request.user %}
                         <div class="card-actions justify-end" >

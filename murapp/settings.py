@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-a2gnn*_y@fvks(jaf+58%h_ozi620-$c(g_t5%$7%e)#it9c!h
 DEBUG = True
 
 ALLOWED_HOSTS = ["social.murmur.lat",
-                 "localhost",]
+                 "localhost",
+                 "murmur.lat"]
 
 
 # Application definition
@@ -152,5 +153,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://social.murmur.lat",
+    
+    "https://murmur.lat"
 ]

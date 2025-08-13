@@ -2,7 +2,11 @@ from django.db import models
 from django.core.files.base import ContentFile
 import requests
 
+class Theme(models.Model):
+    name = models.CharField(max_length=50,)
 
+    def __str__(self):
+        return self.name
 
 class UserProfile(models.Model):
     def avatar_upload_path(instance, filename):
@@ -14,6 +18,7 @@ class UserProfile(models.Model):
     profile_picture = models.ImageField(upload_to=avatar_upload_path, blank=True, null=True)
     posts = models.ManyToManyField('posts.Post', related_name='user_posts', blank=True)
     prof_theme = models.TextField(blank=True, default='light')
+    themes = models.ManyToManyField(Theme, blank=True)
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
@@ -34,4 +39,11 @@ class UserProfile(models.Model):
             if response.status_code == 200:
                 file_name = f"{self.user.username}_avatar.svg"
                 self.profile_picture.save(file_name, ContentFile(response.content), save=False)
+
+        if not self.themes.exists():
+            iniciales = Theme.objects.filter(name__in=['light', 'dark'])
+            self.themes.set(iniciales)
         super().save(*args, **kwargs)  # Call the "real" save() method.
+        if not self.themes.exists():
+            iniciales = Theme.objects.filter(name__in=['light', 'dark'])
+            self.themes.set(iniciales)
