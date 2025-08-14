@@ -20,6 +20,24 @@ class Post(models.Model):
             self.general_pid = pid
         super().save(*args, **kwargs)
 
+class Comment(models.Model):
+    general_pid = models.OneToOneField(GlobalPostIdentifier, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+    anonymous = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Comment {self.general_pid} on {self.post} by {self.author.username}"
+    
+    def save(self, *args, **kwargs):
+        if not self.general_pid_id: 
+            pid = GlobalPostIdentifier.objects.create()
+            self.general_pid = pid
+        super().save(*args, **kwargs)
+            
+
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')

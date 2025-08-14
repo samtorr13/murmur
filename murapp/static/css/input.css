@@ -6,7 +6,7 @@
   themes: light --default, dark --prefersdark, lime, cupcake;
 }
 
-@plugin "daisyui/theme" {
+@plugin "./daisyui-theme.js" {
   name: "lime";
   default: false;
   prefersdark: false;
@@ -41,7 +41,7 @@
   --noise: 0;
 }
 
-@plugin "daisyui/theme" {
+@plugin "./daisyui-theme.js" {
   name: "lime_dark";
   default: false;
   prefersdark: true;

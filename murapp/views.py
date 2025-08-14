@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from posts.models import Like, Post
+from posts.models import Like, Post, Comment
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 
@@ -56,3 +56,21 @@ def like_post(request, post_id):
 
 
     return redirect('home')
+
+@login_required
+def comment_as_view(request, post_id):
+    if request.method == "POST":
+        content = request.POST.get("content")
+        post = Post.objects.get(id=post_id)
+        comment = Comment.objects.create(
+            post=post,
+            author=request.user,
+            content=content
+        )
+        return redirect("post_detail", post_id=post.id)
+    comments = get_object_or_404(Post, id=post_id).comments.all()
+
+    if request.headers.get('HX-Request'):
+        html = render_to_string("components/comment.html", {"comments": comments, "post_id": post_id})
+        return HttpResponse(html)
+    return render(request, "posts/comment_form.html", {"comments": comments})

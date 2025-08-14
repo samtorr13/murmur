@@ -14,6 +14,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('post/like/<int:post_id>/', views.like_post, name='like_post'),
     path('', include('user_profile.urls')),
+    path('posts/comment/<int:post_id>/', view=views.comment_as_view, name='comment_as_view'),
 ]
 
 if settings.DEBUG:

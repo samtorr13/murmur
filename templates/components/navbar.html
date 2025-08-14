@@ -18,14 +18,19 @@
       {% endif %}
     </div>
     <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-      <li><a href="/profile/{{request.user.username}}">Perfil</a></li>
-      <li><a>Ajustes</a></li>
-      <li>
-        <form action="{% url 'logout' %}" method="post">
-          {% csrf_token %}
-          <button type="submit" class="">Cerrar sesión</button>
-        </form>
-      </li>
+      {% if request.user.is_authenticated%}
+        <li><a href="/profile/{{request.user.username}}">Perfil</a></li>
+        <li><a>Ajustes</a></li>
+        <li>
+          <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="">Cerrar sesión</button>
+          </form>
+        </li>
+      {% else %}
+        <li><a href="accounts/login">Iniciar sesión</a></li>
+        <li><a href="accounts/signup">Registrarse</a></li>
+      {% endif %}
     </ul>
   </div>
 </div>
