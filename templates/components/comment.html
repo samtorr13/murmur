@@ -1,5 +1,5 @@
-<div class="space-y-4">
-<form method="post" class="card bg-base-100 shadow-md" hx-post="{% url 'comment_as_view' post_id %}" hx-target="#comments-box" hx-swap="outerHTML">
+<div id="comments-box" class="space-y-4 content-center">
+<form method="post" class="card bg-base-100 shadow-md" hx-post="{% url 'comment_as_view' post_id %}" hx-target="#comments-box" hx-swap="innerHTML">
                 {% csrf_token %}
                 <div class="card-body">
                     <h2 class="card-title">comentar</h2>
@@ -15,23 +15,26 @@
                     </div>
                 </div>
             </form>
+
+{% if not comments %}
+<h3>No hay comentarios aún</h3>
+<h2 class="text-gray-500">Pero puedes ser el primero en comentar ;)</h2>
+{% endif %}            
 {% for comment in comments %}
     <div class="card bg-base-100 shadow-md">
         <div class="card-body">
             <div class="comment">
-                <p><strong>{{ comment.author.username }}</strong> said:</p>
+                <h2 class="text-sm text-gray-500">
+                {% if comment.anonymous %}
+                    Anónimo
+                {% else %}
+                    <a href="{% url 'userprofile' comment.author.username %}">{{ comment.author.username }}</a>
+                {% endif %}
+                &bull; {{ comment.created_at|date:"d M Y H:i" }}
+            </h2>
                 <p>{{ comment.content }}</p>
             </div>
         </div>
     </div>
 {% endfor %}
 </div>
-
-<script>
-                document.body.addEventListener('htmx:configRequest', function(event) {
-                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-                    if (csrfToken) {
-                        event.detail.headers['X-CSRFToken'] = csrfToken;
-                    }
-                });
-            </script>

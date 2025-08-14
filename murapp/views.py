@@ -62,15 +62,16 @@ def comment_as_view(request, post_id):
     if request.method == "POST":
         content = request.POST.get("content")
         post = Post.objects.get(id=post_id)
+        is_anon = request.POST.get('anonymous') == 'on'
         comment = Comment.objects.create(
             post=post,
             author=request.user,
-            content=content
+            content=content,
+            anonymous=is_anon
         )
-        return redirect("post_detail", post_id=post.id)
-    comments = get_object_or_404(Post, id=post_id).comments.all()
+    comments = get_object_or_404(Post, id=post_id).comments.filter(parent__isnull=True).order_by('-created_at')
+
 
     if request.headers.get('HX-Request'):
-        html = render_to_string("components/comment.html", {"comments": comments, "post_id": post_id})
-        return HttpResponse(html)
+        return render(request, "components/comment.html", {"post_id": post_id, "comments": comments})
     return render(request, "posts/comment_form.html", {"comments": comments})

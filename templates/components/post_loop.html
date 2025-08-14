@@ -74,7 +74,7 @@
                     const modal = document.getElementById('comment_box');
                     modal.showModal();
                     
-                    htmx.ajax('GET', `posts/comment/${postId}/`, {
+                    htmx.ajax('GET', `/posts/comment/${postId}/`, {
                         target: '#comments-container',
                         swap: 'innerHTML'
                     });

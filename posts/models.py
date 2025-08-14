@@ -28,6 +28,14 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     anonymous = models.BooleanField(default=False)
 
+    parent = models.ForeignKey(
+        'self',                  
+        null=True,               
+        blank=True,
+        related_name='replies',  
+        on_delete=models.CASCADE
+    )
+
     def __str__(self):
         return f"Comment {self.general_pid} on {self.post} by {self.author.username}"
     
