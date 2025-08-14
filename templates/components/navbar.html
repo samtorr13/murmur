@@ -5,8 +5,10 @@
     <a href="/" class="btn btn-ghost text-xl">MurMur</a>
   </div>
   <div class="flex-1">
-    <label> Nombre de la página </label>
+    <label> {{page}} </label>
   </div>
+  
+  {% if request.user.is_authenticated%}
   <div class="dropdown dropdown-end flex-none">
     <div tabindex="0" role="button" class="btn m-1 flex flex-row items-center gap-2 p-3">
       {% if request.user.is_authenticated %}
@@ -17,8 +19,8 @@
         <span class="text-xs mt-1">{{ request.user.username|default:"Invitado" }}</span>
       {% endif %}
     </div>
+    
     <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-      {% if request.user.is_authenticated%}
         <li><a href="/profile/{{request.user.username}}">Perfil</a></li>
         <li><a>Ajustes</a></li>
         <li>
@@ -27,10 +29,16 @@
             <button type="submit" class="">Cerrar sesión</button>
           </form>
         </li>
-      {% else %}
-        <li><a href="accounts/login">Iniciar sesión</a></li>
-        <li><a href="accounts/signup">Registrarse</a></li>
-      {% endif %}
-    </ul>
+      </ul>
+      
+        
+      
+    
   </div>
+  {% else %}
+  <a href="/accounts/login/" class="btn m-1 flex-row items-center gap-2 p-3"> 
+    <span class="material-symbols-outlined"> login </span>
+    <label> Iniciar Sesión </label>
+  </a>
+  {% endif %}
 </div>

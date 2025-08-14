@@ -13,6 +13,7 @@
             </h2>
             <p>{{ post.content }}</p>
             <div class="card-actions justify-end mt-2">
+                {% if request.user.is_authenticated %}
                 <div id="like-btn-wrapper-{{ post.id }}">
                     <form 
                         hx-post="{% url 'like_post' post.id %}" 
@@ -29,6 +30,23 @@
                 <button class="btn btn-ghost btn-sm" onclick="openCommentModal({{ post.id }})">
                     <span class="material-symbols-outlined">comment</span> Comentar
                 </button>
+
+                {% else %}
+
+                <div id="like-btn-wrapper-{{ post.id }}">
+                    <a href="/accounts/login/">
+                        <button class="btn btn-ghost btn-sm">
+                            <span class="material-symbols-outlined">thumb_up</span> {{ post.likes.count }} Me gusta
+                        </button>
+                    </a>
+                </div>
+                <a href="/accounts/login/">
+                    <button class="btn btn-ghost btn-sm" onclick="openCommentModal({{ post.id }})">
+                        <span class="material-symbols-outlined">comment</span> Comentar
+                    </button>
+                </a>
+                {% endif%}
+
             </div>
         </div>
     </div>
