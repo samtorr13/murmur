@@ -1,2 +1,4 @@
 murapp/static/css/tailwind.css filter=lfs diff=lfs merge=lfs -text
 murapp/static/css/tailwind filter=lfs diff=lfs merge=lfs -text
+
+murapp/static/css/output.css linguist-generated
