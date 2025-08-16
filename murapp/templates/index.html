@@ -18,12 +18,12 @@
     <div class="grid grid-cols-12 gap-1 p-4 sm:gap-6 lg:gap-4 mx-auto">
         
         <!-- Sidebar placeholder -->
-        <aside class="col-span-2 bg-base-100 rounded-lg shadow hidden lg:block p-4 select-none">
+        <aside class="col-span-3 bg-base-100 rounded-lg shadow hidden lg:block p-4 select-none">
             <p class="text-sm text-gray-500">[Sidebar placeholder]</p>
         </aside>
 
         <!-- Main Content -->
-        <main class="col-span-12 lg:col-span-8 space-y-4">
+        <main class="col-span-12 lg:col-span-6 space-y-4">
 
             <!-- Formulario para publicar -->
              {% if request.user.is_authenticated %} 
@@ -61,7 +61,7 @@
         </main>
 
         <!-- Extra sidebar (opcional) -->
-        <aside class="col-span-2 hidden lg:block select-none"></aside>
+        <aside class="col-span-3 hidden lg:block select-none"></aside>
     </div>
 
     <!-- Floating button (opcional si ya no usas modal/new page) -->
