@@ -1,5 +1,5 @@
 from django.contrib import admin
-from posts.models import Post, Like, Comment, Media
+from posts.models import Post, Like, Comment, Media, Report
 
 
 class LikeInline(admin.TabularInline):
@@ -19,7 +19,7 @@ class MediaInline(admin.TabularInline):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('general_pid', 'author', 'created_at')
+    readonly_fields = ('general_pid', 'author', 'created_at', 'like_count', 'content', 'anonymous')
     search_fields = ('author__username', 'content')
     list_filter = ('created_at',)
     inlines = [LikeInline, CommentInline, MediaInline]
@@ -32,3 +32,11 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ('created_at',)
 
     ordering = ('-created_at',)
+
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+    readonly_fields = ('post', 'user', 'created_at', 'reason',)
+    list_display = ('post', 'resolved', 'deleted', 'reason')
+    search_fields = ('post__content', 'user__username', 'reason', 'resolved', 'deleted')
+    list_filter = ('resolved',)
+    ordering = ('-created_at', 'resolved')

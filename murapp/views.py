@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from posts.models import Like, Post, Comment, Media
+from posts.models import Like, Post, Comment, Media, Report
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 
@@ -83,3 +83,18 @@ def comment_as_view(request, post_id):
     if request.headers.get('HX-Request'):
         return render(request, "components/comment.html", {"post_id": post_id, "comments": comments})
     return render(request, "posts/comment_form.html", {"comments": comments})
+
+@login_required
+def report_post(request, post_id):
+    if request.method == "POST":
+        post = get_object_or_404(Post, id=post_id)
+        reason = request.POST.get("reason")
+
+        report = Report.objects.create(
+            post=post,
+            user=request.user,
+            reason=reason
+        )
+
+        return redirect('home')
+    return HttpResponse(status=400)
