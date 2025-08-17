@@ -27,8 +27,10 @@
                     <form id="profileForm" method="post" action="{% url 'profile_edit' %}" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="sm:flex-row flex flex-col items-center gap-4">
-                            <div class="flex flex-col gap-3 items-center">
-                                <h1> Imagen de Perfil </h1>
+
+
+                            <fieldset class="flex flex-col gap-3 items-center fieldset border border-base-300 rounded-box p-2">
+                                <legend class="fieldset-legend"> Imagen de Perfil </legend>
                                 <div class="avatar size-64 sm:size-32 p-2">
                                     {% if profile.profile_picture %}
                                         <img id="finalPreview" src="{{ profile.profile_picture.url }}" alt="Avatar" class="rounded-full w-full h-full object-cover" />
@@ -38,11 +40,13 @@
                                 </div>
                                 <input id="uploadImage" type="file" accept="image/*" class="hidden" name="profile_picture" >
                                 <label for="uploadImage" class="btn btn-soft cursor-pointer">Cambiar Imagen</label>
-                            </div>
-                            <div id="bio_cont" class="w-64">
+                            </fieldset>
+
+                            <fieldset id="bio_cont" class="w-64 fieldset border border-base-300 rounded-box p-2">
                                 <legend class="fieldset-legend"> Bio </legend>
                                 <textarea class="textarea" name="bio">{{ profile.bio }}</textarea>
-                            </div>
+                            </fieldset>
+
                             <fieldset class="grid grid-cols-3 gap-1 fieldset border border-base-300 rounded-box p-2">
                             <legend class="fieldset-legend">Temas</legend>
                                 {% for theme in temas %}

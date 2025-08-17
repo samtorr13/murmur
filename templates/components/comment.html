@@ -1,5 +1,5 @@
-<div id="comments-box" class="space-y-4 content-center">
-<form method="post" class="card bg-base-100 shadow-md" hx-post="{% url 'comment_as_view' post_id %}" hx-target="#comments-box" hx-swap="innerHTML">
+<div id="comments-box-{{ post_id }}" class="space-y-4 content-center">
+<form method="post" class="card bg-base-100 shadow-md" hx-post="{% url 'comment_as_view' post_id %}" hx-target="#comments-box-{{ post_id }}" hx-swap="innerHTML">
                 {% csrf_token %}
                 <div class="card-body">
                     <h2 class="card-title">comentar</h2>
@@ -26,13 +26,21 @@
             <div class="comment">
                 <h2 class="text-sm text-gray-500">
                 {% if comment.anonymous %}
-                    Anónimo
+                    Anónimo &bull; {{ comment.created_at|date:"d M Y H:i" }} &bull; #{{ comment.general_pid }}
                 {% else %}
-                    <a href="{% url 'userprofile' comment.author.username %}">{{ comment.author.username }}</a>
+                    <div class="flex flex-row gap-1 items-center">
+                    <a href="profile/{{ comment.author.username }}">
+                    <img src="{{ comment.author.profile.profile_picture.url }}" alt="Avatar" class="rounded-full w-8 h-8 object-cover" />
+                    </a>
+                    <a href="profile/{{ comment.author.username }}">
+                    {{ comment.author.username }}</a>
+                    &bull; {{ comment.created_at|date:"d M Y H:i" }} &bull; #{{ comment.general_pid }}
+                </div>
                 {% endif %}
-                &bull; {{ comment.created_at|date:"d M Y H:i" }}
+                
+
             </h2>
-                <p>{{ comment.content }}</p>
+                <p class="mt-2">{{ comment.content }}</p>
             </div>
         </div>
     </div>

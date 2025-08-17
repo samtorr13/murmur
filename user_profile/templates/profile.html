@@ -41,7 +41,9 @@
                         {% endif %}
                     </div>
                 </div>
-                {% include 'components/post_loop.html' with posts=posts %}
+
+
+                {% include 'components/post_loop.html' with posts=posts selfUser=selfUser %}
             </div>
             
         </div>

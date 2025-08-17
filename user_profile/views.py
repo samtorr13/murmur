@@ -16,11 +16,18 @@ def userprofile(request, username):
 
     posts = Post.objects.filter(author=profile.user, anonymous=False ).order_by('-created_at')
 
+    if profile.user == request.user:
+        selfUser = True
+    else:
+        selfUser = False
+
+
     return render(request, 'profile.html', {
         'posts': posts,
         'user': profile.user,  
         'profile': profile,    
         'userprofile': viewer_profile,
+        'selfUser': selfUser
     })
 
 def profileEdit(request):
@@ -39,3 +46,10 @@ def profileEdit(request):
         'temas': temas,
         
     })
+
+@login_required
+def deletePost(request, post_id):
+    if request.method == 'POST':
+        post = get_object_or_404(Post, id=post_id, author=request.user)
+        post.delete()
+        return redirect('userprofile', username=request.user.username)

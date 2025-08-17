@@ -10,7 +10,7 @@
         <div class="card-body">
             <h2 class="text-sm text-gray-500">
                 {% if post.anonymous %}
-                    Anónimo &bull; {{ post.created_at|date:"d M Y H:i" }}
+                    Anónimo &bull; {{ post.created_at|date:"d M Y H:i" }} &bull; #{{ post.general_pid }}
                 {% else %}
                 <div class="flex flex-row gap-1 items-center">
                     <a href="profile/{{ post.author.username }}">
@@ -18,7 +18,7 @@
                     </a>
                     <a href="profile/{{ post.author.username }}">
                     {{ post.author.username }}</a>
-                    &bull; {{ post.created_at|date:"d M Y H:i" }}
+                    &bull; {{ post.created_at|date:"d M Y H:i" }} &bull; #{{ post.general_pid }}
                 </div>
                 {% endif %}
                 
@@ -34,27 +34,35 @@
 
             <div class="card-actions justify-end mt-2">
                 {% if request.user.is_authenticated %}
-                <div id="like-btn-wrapper-{{ post.id }}">
-                    <form 
-                        hx-post="{% url 'like_post' post.id %}" 
-                        hx-target="#like-btn-wrapper-{{ post.id }}" 
-                        hx-swap="innerHTML"
-                        method="POST"
-                    >
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-ghost btn-sm">
-                            <span class="material-symbols-outlined">thumb_up</span> {{ post.likes.count }} Me gusta
-                        </button>
-                    </form>
-                </div>
-                <button class="btn btn-ghost btn-sm" onclick="openCommentModal({{ post.id }})">
-                    <span class="material-symbols-outlined">comment</span> Comentar
-                </button>
+                    <div id="like-btn-wrapper-{{ post.id }}">
+                        <form 
+                            hx-post="{% url 'like_post' post.id %}" 
+                            hx-target="#like-btn-wrapper-{{ post.id }}" 
+                            hx-swap="innerHTML"
+                            method="POST"
+                        >
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-ghost btn-sm">
+                                <span class="material-symbols-outlined">thumb_up</span> {{ post.likes.count }} Me gusta
+                            </button>
+                        </form>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" onclick="openCommentModal({{ post.id }})">
+                        <span class="material-symbols-outlined">comment</span> Comentar
+                    </button>
 
-                <button class="btn btn-ghost btn-sm" onclick="openReportModal({{ post.id }})">
-                    <span class="material-symbols-outlined">flag</span> Reportar
-                </button>
+                    <button class="btn btn-ghost btn-sm" onclick="openReportModal({{ post.id }})">
+                        <span class="material-symbols-outlined">flag</span> Reportar
+                    </button>
 
+                    {% if selfUser %}
+                        <form action="{% url 'delete_post' post.id %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-ghost btn-sm" onclick="openEditModal({{ post.id }})">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </form>
+                    {% endif %}
                 {% else %}
 
                 <div id="like-btn-wrapper-{{ post.id }}">
@@ -83,7 +91,7 @@
 
 <dialog id="report_box" class="modal">
     <div class="modal-box bg-base-200">
-        <div id="comments-container">
+        <div id="report-container">
 
             <div class="card bg-base-100 shadow-md">
                 <div class="card-body">
@@ -105,6 +113,23 @@
         <button>close</button>
     </form>
 </dialog>
+
+<dialog id="comment_box_{{ post.id }}" class="modal">
+                    <div class="modal-box bg-base-200">
+                        <div id="comments-container-{{ post.id }}">
+                            <!-- Los comentarios se cargarán aquí -->
+                             <div class="skeleton h-64 w-full"></div>
+                        </br>
+                             <div class="skeleton h-32 w-full"></div>
+                        </div>
+                    </div>
+
+                    <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                    </form>
+                </dialog>
+
+
 {% endfor %}
             
             {% if posts.has_next %}
@@ -116,6 +141,8 @@
                     class="text-center p-4 text-gray-500"
                 >
                     <!-- Este div dispara la carga -->
+
+                    <span class="loading loading-dots loading-lg"></span>
                 </div>
             {% else %}
                 <div class="text-center p-4 text-gray-400">
@@ -123,18 +150,7 @@
                 </div>
             {% endif %}
             
-                <dialog id="comment_box" class="modal">
-                    <div class="modal-box bg-base-200">
-                        <div id="comments-container">
-                            <!-- Los comentarios se cargarán aquí -->
-                        </div>
-                    </div>
-
-                    <form method="dialog" class="modal-backdrop">
-                        <button>close</button>
-                    </form>
-                </dialog>
-
+                
             <script>
                 document.body.addEventListener('htmx:configRequest', function(event) {
                     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
@@ -144,11 +160,11 @@
                 });
 
                 function openCommentModal(postId) {
-                    const modal = document.getElementById('comment_box');
+                    const modal = document.getElementById('comment_box_' + postId);
                     modal.showModal();
                     
                     htmx.ajax('GET', `/posts/comment/${postId}/`, {
-                        target: '#comments-container',
+                        target: '#comments-container-' + postId,
                         swap: 'innerHTML'
                     });
                 }
