@@ -56,3 +56,9 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.user} le dió like a {self.post}"
+
+class Media(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='media')
+    file = models.FileField(upload_to='media/post/')
+    def __str__(self):
+        return f"Media for {self.post.general_pid}"

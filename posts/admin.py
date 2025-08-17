@@ -1,5 +1,5 @@
 from django.contrib import admin
-from posts.models import Post, Like, Comment
+from posts.models import Post, Like, Comment, Media
 
 
 class LikeInline(admin.TabularInline):
@@ -12,12 +12,17 @@ class CommentInline(admin.TabularInline):
     extra = 0  
     readonly_fields = ('author', 'created_at', 'content')
 
+class MediaInline(admin.TabularInline):
+    model = Media
+    extra = 0
+    readonly_fields = ('post', 'file')
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ('general_pid', 'author', 'created_at')
     search_fields = ('author__username', 'content')
     list_filter = ('created_at',)
-    inlines = [LikeInline]
+    inlines = [LikeInline, CommentInline, MediaInline]
     ordering = ('-created_at',)
 
 @admin.register(Comment)

@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from posts.models import Like, Post, Comment
+from posts.models import Like, Post, Comment, Media
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 
@@ -11,13 +11,21 @@ def home(request):
     if request.method == 'POST':
         content = request.POST.get('content', '').strip()
         is_anon = request.POST.get('anonymous') == 'on'
+        image = request.FILES.get('image')
 
-        if content:
-            Post.objects.create(
-                author=request.user,
-                content=content,
-                anonymous=is_anon
+        if content or image:
+            post_obj = Post.objects.create(
+            author=request.user,
+            content=content,
+            anonymous=is_anon,
             )
+            if image:
+                Media.objects.create(
+                    post=post_obj,
+                    file=image
+                )
+
+        
             return redirect('home')
     username = request.user.username if request.user.is_authenticated else 'Guest'
     page = request.GET.get("page", 1)
@@ -27,7 +35,7 @@ def home(request):
 
     if request.headers.get("HX-Request"):
         return render(request, "components/post_loop.html", {"posts": page_obj})
-    
+
     return render(request, 'index.html', {'posts': page_obj})
 
 class CustomLoginView(LoginView):

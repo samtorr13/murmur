@@ -1,22 +1,37 @@
             <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"></script>
-
+            <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.0/dist/fancybox/fancybox.css"
+            />
+            <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.0/dist/fancybox/fancybox.umd.js"></script>
             {% for post in posts %}
     <div class="card bg-base-100 shadow w-full">
-
-        <figure class="h-64 p-2">
-            <img src="/media/post_img/R.jpg" >
-        </figure>
 
         <div class="card-body">
             <h2 class="text-sm text-gray-500">
                 {% if post.anonymous %}
-                    Anónimo
+                    Anónimo &bull; {{ post.created_at|date:"d M Y H:i" }}
                 {% else %}
-                    <a href="profile/{{ post.author.username }}">{{ post.author.username }}</a>
+                <div class="flex flex-row gap-1 items-center">
+                    <a href="profile/{{ post.author.username }}">
+                    <img src="{{ post.author.profile.profile_picture.url }}" alt="Avatar" class="rounded-full w-8 h-8 object-cover" />
+                    </a>
+                    <a href="profile/{{ post.author.username }}">
+                    {{ post.author.username }}</a>
+                    &bull; {{ post.created_at|date:"d M Y H:i" }}
+                </div>
                 {% endif %}
-                &bull; {{ post.created_at|date:"d M Y H:i" }}
+                
             </h2>
-            <p>{{ post.content }}</p>
+            <p class="p-1">{{ post.content }}</p>
+
+            {% for media in post.media.all %}
+            <a href="{{ media.file.url }}" data-fancybox="{{ post.id }}" data-caption="Caption #2">
+                <img src="{{ media.file.url }}" class="aspect-[4/3] object-cover h-sm rounded-md" >
+            </a>
+            {% endfor %}
+
+
             <div class="card-actions justify-end mt-2">
                 {% if request.user.is_authenticated %}
                 <div id="like-btn-wrapper-{{ post.id }}">
@@ -55,6 +70,12 @@
             </div>
         </div>
     </div>
+
+<script>
+    Fancybox.bind('[data-fancybox="{{ post.id }}"]', {
+    // Your custom options for a specific gallery
+    });
+</script>
 {% endfor %}
             
             {% if posts.has_next %}
@@ -102,4 +123,7 @@
                         swap: 'innerHTML'
                     });
                 }
+
+
             </script>
+            
