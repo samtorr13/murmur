@@ -1,17 +1,37 @@
             <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"></script>
-
+            <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.0/dist/fancybox/fancybox.css"
+            />
+            <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.0/dist/fancybox/fancybox.umd.js"></script>
             {% for post in posts %}
     <div class="card bg-base-100 shadow w-full">
+
         <div class="card-body">
             <h2 class="text-sm text-gray-500">
                 {% if post.anonymous %}
-                    Anónimo
+                    Anónimo &bull; {{ post.created_at|date:"d M Y H:i" }}
                 {% else %}
-                    <a href="profile/{{ post.author.username }}">{{ post.author.username }}</a>
+                <div class="flex flex-row gap-1 items-center">
+                    <a href="profile/{{ post.author.username }}">
+                    <img src="{{ post.author.profile.profile_picture.url }}" alt="Avatar" class="rounded-full w-8 h-8 object-cover" />
+                    </a>
+                    <a href="profile/{{ post.author.username }}">
+                    {{ post.author.username }}</a>
+                    &bull; {{ post.created_at|date:"d M Y H:i" }}
+                </div>
                 {% endif %}
-                &bull; {{ post.created_at|date:"d M Y H:i" }}
+                
             </h2>
-            <p>{{ post.content }}</p>
+            <p class="p-1">{{ post.content }}</p>
+
+            {% for media in post.media.all %}
+            <a href="{{ media.file.url }}" data-fancybox="{{ post.id }}" data-caption="Caption #2">
+                <img src="{{ media.file.url }}" class="aspect-[4/3] object-cover h-sm rounded-md" >
+            </a>
+            {% endfor %}
+
+
             <div class="card-actions justify-end mt-2">
                 {% if request.user.is_authenticated %}
                 <div id="like-btn-wrapper-{{ post.id }}">
@@ -29,6 +49,10 @@
                 </div>
                 <button class="btn btn-ghost btn-sm" onclick="openCommentModal({{ post.id }})">
                     <span class="material-symbols-outlined">comment</span> Comentar
+                </button>
+
+                <button class="btn btn-ghost btn-sm" onclick="openReportModal({{ post.id }})">
+                    <span class="material-symbols-outlined">flag</span> Reportar
                 </button>
 
                 {% else %}
@@ -50,6 +74,37 @@
             </div>
         </div>
     </div>
+
+<script>
+    Fancybox.bind('[data-fancybox="{{ post.id }}"]', {
+    // Your custom options for a specific gallery
+    });
+</script>
+
+<dialog id="report_box" class="modal">
+    <div class="modal-box bg-base-200">
+        <div id="comments-container">
+
+            <div class="card bg-base-100 shadow-md">
+                <div class="card-body">
+                    <form action="/posts/report/{{ post.id }}/" method="post">
+                        {% csrf_token %}
+                        <h3 class="font-bold text-lg mb-4">Reportar murmullo</h3>
+                        <textarea name="reason" class="textarea textarea-bordered w-full resize-none mb-4" rows="4" placeholder="Describe el motivo del reporte..."></textarea>
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        <div class="modal-action">
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('report_box').close()">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Enviar reporte</button>
+                        </div>
+                    </form>
+                </div>
+             </div>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
 {% endfor %}
             
             {% if posts.has_next %}
@@ -97,4 +152,12 @@
                         swap: 'innerHTML'
                     });
                 }
+
+
+                function openReportModal(postId) {
+                    const modal = document.getElementById('report_box');
+                    modal.showModal();
+                }
+
             </script>
+            

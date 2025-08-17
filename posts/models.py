@@ -56,3 +56,20 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.user} le dió like a {self.post}"
+
+class Media(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='media')
+    file = models.FileField(upload_to='media/post/')
+    def __str__(self):
+        return f"Media for {self.post.general_pid}"
+
+class Report(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='reports')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    reason = models.TextField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Report {self.id} for {self.post.general_pid} by {self.user.username}"

@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from posts.models import Like, Post, Comment
+from posts.models import Like, Post, Comment, Media, Report
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 
@@ -11,13 +11,21 @@ def home(request):
     if request.method == 'POST':
         content = request.POST.get('content', '').strip()
         is_anon = request.POST.get('anonymous') == 'on'
+        image = request.FILES.get('image')
 
-        if content:
-            Post.objects.create(
-                author=request.user,
-                content=content,
-                anonymous=is_anon
+        if content or image:
+            post_obj = Post.objects.create(
+            author=request.user,
+            content=content,
+            anonymous=is_anon,
             )
+            if image:
+                Media.objects.create(
+                    post=post_obj,
+                    file=image
+                )
+
+        
             return redirect('home')
     username = request.user.username if request.user.is_authenticated else 'Guest'
     page = request.GET.get("page", 1)
@@ -27,7 +35,7 @@ def home(request):
 
     if request.headers.get("HX-Request"):
         return render(request, "components/post_loop.html", {"posts": page_obj})
-    
+
     return render(request, 'index.html', {'posts': page_obj})
 
 class CustomLoginView(LoginView):
@@ -75,3 +83,18 @@ def comment_as_view(request, post_id):
     if request.headers.get('HX-Request'):
         return render(request, "components/comment.html", {"post_id": post_id, "comments": comments})
     return render(request, "posts/comment_form.html", {"comments": comments})
+
+@login_required
+def report_post(request, post_id):
+    if request.method == "POST":
+        post = get_object_or_404(Post, id=post_id)
+        reason = request.POST.get("reason")
+
+        report = Report.objects.create(
+            post=post,
+            user=request.user,
+            reason=reason
+        )
+
+        return redirect('home')
+    return HttpResponse(status=400)
