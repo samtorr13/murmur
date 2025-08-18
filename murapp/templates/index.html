@@ -26,36 +26,7 @@
         <main class="col-span-12 lg:col-span-6 space-y-4">
 
             <!-- Formulario para publicar -->
-             {% if request.user.is_authenticated %} 
-                <form method="post" enctype="multipart/form-data" class="card bg-base-100 shadow-xl">
-                    {% csrf_token %}
-                    <div class="card-body">
-                        <h2 class="card-title">Crear nuevo murmullo</h2>
-                        
-                        <textarea name="content" class="textarea textarea-bordered w-full resize-none" rows="4" placeholder="¿Qué estás pensando, {{ request.user.username }}?"></textarea>
-                        <div class="flex-row gap-x-6">
-                            <label class="label cursor-pointer">
-                                <span class="label-text">¿Publicar como anónimo?</span> 
-                                <input type="checkbox" name="anonymous" class="checkbox ml-2" />
-                            </label>
-
-                            <input type="file" accept=".jpeg, .jpg, .png," class="file-input" name="image"/>
-                        </div>
-                        <button type="submit" class="btn btn-primary mt-4 sm:btn-md sm:w-auto">Publicar</button>
-                    </div>
-                </form>
-            {% else %}
-                <div class="card bg-base-100 shadow-xl">
-                    <div class="card-body">
-                        <h2 class="card-title">Crear nuevo murmullo</h2>
-                        
-                        <textarea name="content" class="textarea textarea-bordered w-full resize-none" rows="4" placeholder="¿Qué estás pensando, {{ request.user.username }}?" disabled></textarea>
-                        
-                        <a href="/accounts/login/" class="btn btn-primary mt-4 sm:btn-md sm:w-auto">Inicia sesión para publicar</a>
-                        
-                    </div>
-                </div>
-            {% endif %}
+             {% include 'components/newPostForm.html' %}
             
 
             <!-- Feed de posts -->
@@ -67,16 +38,30 @@
     </div>
 
     <!-- Floating button (opcional si ya no usas modal/new page) -->
-    <a href="/new"
-       class="btn btn-primary rounded-full w-16 h-16 fixed bottom-6 right-6 shadow-lg z-50 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
-             stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 4v16m8-8H4"/>
-        </svg>
-    </a>
+    <button onclick="openNewModal()"
+       class="btn btn-primary rounded-full w-16 h-16 fixed bottom-6 right-6 shadow-lg z-50 flex items-center justify-center"
+        
+       >
+        <span class="material-symbols-Outlined primary-content"> add </span>
+    </button>
 
+<dialog id="new-post" class="modal">
+    <div class="modal-box bg-base-200">
+        <div id="report-container">
+             {% include 'components/newPostForm.html' %}
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
 
+<script>
+    function openNewModal() {
+        const modal = document.getElementById('new-post');
+        modal.showModal();
+        }
+</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8934338334524686"
      crossorigin="anonymous"></script>
 </body>
