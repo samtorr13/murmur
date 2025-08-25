@@ -44,7 +44,7 @@
 @plugin "./daisyui-theme.js" {
   name: "lime_dark";
   default: false;
-  prefersdark: true;
+  prefersdark: false;
   color-scheme: "dark";
   --color-base-100: oklch(90% 0.021 166.113);   /* solo un poco más oscuro que el original */
   --color-base-200: oklch(88% 0.052 163.051);

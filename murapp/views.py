@@ -3,11 +3,14 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from posts.models import Like, Post, Comment, Media, Report
+from user_profile.models import Theme, UserProfile
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 
 
 def home(request):
+    if request.user.is_authenticated and not hasattr(request.user, 'profile'):
+        return redirect('welcome')
     if request.method == 'POST':
         content = request.POST.get('content', '').strip()
         is_anon = request.POST.get('anonymous') == 'on'
@@ -98,3 +101,25 @@ def report_post(request, post_id):
 
         return redirect('home')
     return HttpResponse(status=400)
+
+@login_required
+def welcome_wizard(request):
+    if hasattr(request.user, 'profile'):
+        return redirect('home')
+    
+    if request.method == 'POST':
+        bio = request.POST.get('bio')
+        profile_picture = request.FILES.get('profile_picture')
+        prof_theme = request.POST.get('theme')
+
+        UserProfile.objects.create(
+            user = request.user,
+            bio = bio,
+            profile_picture = profile_picture,
+            prof_theme = prof_theme
+        )
+        
+        return redirect('userprofile', username=request.user.username)
+    
+    temas = list(Theme.objects.filter(group="User"))
+    return render(request, 'welcome.html', {'temas': temas})

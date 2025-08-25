@@ -16,6 +16,7 @@ urlpatterns = [
     path('', include('user_profile.urls')),
     path('posts/comment/<int:post_id>/', view=views.comment_as_view, name='comment_as_view'),
     path('posts/report/<int:post_id>/', view=views.report_post, name='report_post'),
+    path('welcome/', views.welcome_wizard, name='welcome')
 ]
 
 if settings.DEBUG:

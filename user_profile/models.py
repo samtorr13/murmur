@@ -4,7 +4,7 @@ import requests
 
 class Theme(models.Model):
     name = models.CharField(max_length=50,)
-
+    group = models.CharField(max_length=50,)
     def __str__(self):
         return self.name
 
@@ -40,9 +40,6 @@ class UserProfile(models.Model):
                 file_name = f"{self.user.username}_avatar.svg"
                 self.profile_picture.save(file_name, ContentFile(response.content), save=False)
 
-        if not self.themes.exists():
-            iniciales = Theme.objects.filter(name__in=['light', 'dark'])
-            self.themes.set(iniciales)
         super().save(*args, **kwargs)  # Call the "real" save() method.
         if not self.themes.exists():
             iniciales = Theme.objects.filter(name__in=['light', 'dark'])

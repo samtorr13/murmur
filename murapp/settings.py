@@ -138,8 +138,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',  # para admin y auth normal
-    'allauth.account.auth_backends.AuthenticationBackend',  # para allauth
+    'django.contrib.auth.backends.ModelBackend', 
+    'allauth.account.auth_backends.AuthenticationBackend',  
 ]
 
 SITE_ID = 1
@@ -152,6 +152,9 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 CSRF_TRUSTED_ORIGINS = [
     

@@ -26,8 +26,8 @@
             <p class="p-1">{{ post.content }}</p>
 
             {% for media in post.media.all %}
-            <a href="{{ media.file.url }}" data-fancybox="{{ post.id }}" data-caption="Caption #2">
-                <img src="{{ media.file.url }}" class="aspect-[4/3] object-cover h-sm rounded-md" >
+            <a href="{{ media.file.url }}" data-fancybox="{{ post.id }}" data-caption="Caption #2" class="w-full">
+                <img src="{{ media.file.url }}" class="aspect-[4/3] object-cover w-full rounded-md" >
             </a>
             {% endfor %}
 

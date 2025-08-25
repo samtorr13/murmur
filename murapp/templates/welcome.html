@@ -1,4 +1,4 @@
-<html data-theme="{{profile.prof_theme}}">
+<html data-theme="">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
@@ -11,35 +11,35 @@
     <title>MurMur</title>
 </head>
 <body class="bg-base-200 min-h-screen">
-    {% include 'components/navbar.html' with page="Editando Perfil " %}
+    
 
     <div class="grid grid-cols-12 gap-4 p-4">
-        <aside class="col-span-2 bg-base-100 rounded-lg shadow hidden lg:block p-4 select-none">
-            <p class="text-sm text-gray-500">Esto es una barra lateral</p>
+        <aside class="col-span-2 hidden lg:block p-4 select-none">
+            
         </aside>
         
         <div class="col-span-12 lg:col-span-8 space-y-4">
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body p-4">
-                    <h1 class="card-title p-4">Editar Perfil</h1>
+                    <h1 class="card-title p-4">creemos tu perfil</h1>
 
                     
-                    <form id="profileForm" method="post" action="{% url 'profile_edit' %}" enctype="multipart/form-data">
+                    <form id="profileForm" method="post" action="{% url 'welcome' %}" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <div class="sm:flex-row flex flex-col items-center gap-4">
+                        <div class="sm:flex-row flex flex-col items-center justify-center gap-4">
 
 
                             <fieldset class="flex flex-col gap-3 items-center fieldset border border-base-300 rounded-box p-2">
-                                <legend class="fieldset-legend"> Imagen de Perfil </legend>
+                                <legend class="fieldset-legend"> Imagen de Perfil (opcional) </legend>
                                 <div class="avatar size-64 sm:size-32 p-2">
                                     {% if profile.profile_picture %}
                                         <img id="finalPreview" src="{{ profile.profile_picture.url }}" alt="Avatar" class="rounded-full w-full h-full object-cover" />
                                     {% else %}
-                                        <span class="material-symbols-outlined text-7xl">account_circle</span>
+                                        <img id="finalPreview" src="{% static 'img/defaultprof.png'%}">
                                     {% endif %}
                                 </div>
                                 <input id="uploadImage" type="file" accept="image/*" class="hidden" name="profile_picture" >
-                                <label for="uploadImage" class="btn btn-soft cursor-pointer">Cambiar Imagen</label>
+                                <label for="uploadImage" class="btn btn-soft cursor-pointer">Subir Imagen</label>
                             </fieldset>
 
                             <fieldset id="bio_cont" class="w-64 fieldset border border-base-300 rounded-box p-2">
@@ -58,11 +58,11 @@
                             </fieldset>                             
                             
                         </div>
-                        {% if profile.user == request.user %}
+                        
                         <div class="card-actions justify-end" >
                             <input type="submit" class="btn btn-primary mt-4" value="Guardar" />
                         </div>
-                        {% endif %}
+                        
                     </form>
                 </div>
             </div>
@@ -179,7 +179,7 @@
         .then(response => {
             if (response.ok) {
                 // Cambia la URL aquí a donde quieres que vaya luego de guardar
-                window.location.href = "{% url 'userprofile' profile.user.username %}";
+                window.location.href = "{% url 'home'%}";
             } else {
                 alert('Error al actualizar perfil');
             }
