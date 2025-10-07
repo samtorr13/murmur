@@ -6,6 +6,8 @@
     <title>MurMur</title>
     {% load static %}
     <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
 </head>
 
 
@@ -28,6 +30,22 @@
           <input type="password" name="password" placeholder="Contraseña" class="input input-bordered w-full mb-4" required />
           <button type="submit" class="btn btn-primary w-full">Entrar</button>
 
+          <div class="divider">OR</div>
+
+          <div id="g_id_onload"
+              data-client_id="870599055943-miqma5cn68kst1t7pa688l8bea1o2fmc.apps.googleusercontent.com"
+              data-login_uri="{% url 'google_login_by_token' %}"
+              data-auto_prompt="true">
+          </div>
+
+          <div class="g_id_signin"
+              data-type="standard"
+              data-shape="rectangular"
+              data-theme="outline"
+              data-text="signin_with"
+              data-size="large"
+              data-logo_alignment="left">
+          </div>
         {% if form.errors %}
             <div class="bg-red-100 text-red-600 p-2 rounded">
               {% for field in form %}
