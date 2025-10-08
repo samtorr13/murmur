@@ -149,7 +149,7 @@ SITE_ID = 1
 LOGIN_REDIRECT_URL = 'home'  
 ACCOUNT_LOGOUT_REDIRECT_URL = 'login'  
 ACCOUNT_LOGIN_METHODS = {'email', 'username'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 MEDIA_URL = '/media/'

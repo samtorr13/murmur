@@ -111,12 +111,18 @@ def welcome_wizard(request):
         bio = request.POST.get('bio')
         profile_picture = request.FILES.get('profile_picture')
         prof_theme = request.POST.get('theme')
+        user_name = request.POST.get('usrname')
+        
+        
+        request.user.username = user_name
+        request.user.save()
 
         UserProfile.objects.create(
             user = request.user,
             bio = bio,
             profile_picture = profile_picture,
             prof_theme = prof_theme
+
         )
         
         return redirect('userprofile', username=request.user.username)
