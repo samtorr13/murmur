@@ -33,12 +33,14 @@ def userprofile(request, username):
 def profileEdit(request):
     profile = get_object_or_404(UserProfile, user__username=request.user.username)
     temas = list(profile.themes.values_list('name', flat=True))
-    print(temas)
+
     if request.method == 'POST':
         profile.bio = request.POST.get('bio', profile.bio)
         profile.profile_picture = request.FILES.get('profile_picture', profile.profile_picture)
         profile.prof_theme = request.POST.get('theme', profile.prof_theme)
         profile.save()
+
+
         return redirect('userprofile', username=request.user.username)
 
     return render(request, 'profile_edit.html', {

@@ -43,6 +43,12 @@
                             </fieldset>
 
                             <fieldset id="bio_cont" class="w-64 fieldset border border-base-300 rounded-box p-2">
+                                <legend class="fieldset-legend"> Nombre de Usuario </legend>
+                                <label class="input">
+                                @
+                                <input type="text" class="grow" value="{{ request.user.username }}" name="usrname" />
+                                </label>
+
                                 <legend class="fieldset-legend"> Bio </legend>
                                 <textarea class="textarea" name="bio">{{ profile.bio }}</textarea>
                             </fieldset>
