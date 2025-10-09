@@ -4,3 +4,4 @@ node_modules/
 murapp/static/css/tailwindcss
 media/
 db.sqlite3
+
