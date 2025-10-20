@@ -14,7 +14,7 @@ def validar_username(request):
 
     if not username:
         valid = False
-        message = "no"
+        message = "Ingresa un nombre de usuario"
     elif User.objects.filter(username__iexact=username).exists():
         valid = False
         message = "Este nombre ya está en uso"
