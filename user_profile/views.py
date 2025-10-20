@@ -3,13 +3,23 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from posts.models import Like, Post
 from user_profile.models import UserProfile
+from django.contrib.auth import update_session_auth_hash
 import os
 from uuid import uuid4
 
-
+import logging
+logger = logging.getLogger(__name__)
 
 @login_required
 def userprofile(request, username):
+    
+    logger.info("userprofile request path=%s referer=%s user=%s session=%s",
+                request.path,
+                request.META.get('HTTP_REFERER'),
+                getattr(request.user, 'username', None),
+                request.session.session_key)
+
+
     profile = get_object_or_404(UserProfile, user__username=username)
     viewer_profile = request.user.profile if request.user.is_authenticated else None
     prof_photo = viewer_profile.profile_picture if viewer_profile and viewer_profile.profile_picture else None
@@ -40,14 +50,26 @@ def profileEdit(request):
         profile.prof_theme = request.POST.get('theme', profile.prof_theme)
         profile.save()
 
+        new_name = request.POST.get('usrname')
 
-        return redirect('userprofile', username=request.user.username)
+        request.user.username = new_name
+        request.user.save()
+        update_session_auth_hash(request, request.user)
+
+        print(new_name)
+        print(request.user.username)
+        return redirect('profileUpdate')
 
     return render(request, 'profile_edit.html', {
         'profile': profile,
         'temas': temas,
         
     })
+
+@login_required
+def profileUpdate(request):
+    print(request.user.username)
+    return redirect('userprofile', request.user.username)
 
 @login_required
 def deletePost(request, post_id):

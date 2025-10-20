@@ -4,6 +4,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"></script>
     {% load static %}
     <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
 
@@ -44,8 +45,29 @@
                             
                             <fieldset id="bio_cont" class="w-64 fieldset border border-base-300 rounded-box p-2">
                                 <legend class="fieldset-legend"> Nombre de Usuario </legend>
-                    
+                                <label class="input input-success" id="usrinput">
+                                @
+                                <input 
+                                    type="text"
+                                    class="grow validator"
+                                    value="{{ request.user.username }}"
+                                    name="usrname"
+                                    id="usrname"
+
+                                    hx-get="{% url 'validar_username' %}"
+                                    hx-trigger="keyup changed delay:400ms"
+                                    hx-target="#username_feedback"
+                                    hx-swap="outerHTML"
+
+                                    pattern="[A-Za-z][A-Za-z0-9\-_]*" minlength="3" maxlength="30"
+                                    />
+
+                                    
+                                </label>
                                 
+                                <div id="username_feedback" class="label">
+                                    <span class="label-text-alt text-gray-500">Revisa tu nombre de usuario</span>
+                                </div>                                
                                 
                                 <legend class="fieldset-legend"> Bio </legend>
                                 <textarea class="textarea" name="bio">{{ profile.bio }}</textarea>
@@ -88,6 +110,19 @@
 </div>
 
 <script>
+    document.body.addEventListener('htmx:afterOnLoad', (event) => {
+    const input = document.querySelector('#usrinput')
+    const response = event.detail.xhr.responseText
+
+    if (response.includes('text-success')) {
+        input.classList.remove('input-error')
+        input.classList.add('input-success')
+    } else if (response.includes('text-error')) {
+        input.classList.remove('input-success')
+        input.classList.add('input-error')
+    }
+    })
+
     let cropper;
     let croppedBlob = null; // Guardamos el blob recortado para enviar en submit
     const uploadImage = document.getElementById('uploadImage');
@@ -183,7 +218,7 @@
         .then(response => {
             if (response.ok) {
                 // Cambia la URL aquí a donde quieres que vaya luego de guardar
-                window.location.href = "{% url 'userprofile' profile.user.username %}";
+                window.location.href = "{% url 'profileUpdate' %}";
             } else {
                 alert('Error al actualizar perfil');
             }
